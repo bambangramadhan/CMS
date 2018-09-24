@@ -1,8 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var jwt = require('jsonwebtoken');
-const Data = require('../models/data');
+const Datadate = require('../models/datadate');
 var ObjectId = require('mongodb').ObjectID;
+var moment = require('moment')
 
 router.post('/search', function(req, res, next) {
   let data1 = {};
@@ -12,24 +13,16 @@ router.post('/search', function(req, res, next) {
   if(req.body.frequency){
     data1.frequency = req.body.frequency
   }
-  Data.findOne(data1)
+  Datadate.find(data1)
   .then(data => {
-    res.json(
-      [
-        {
-          _id: data._id,
-          letter: data.letter,
-          frequency: data.frequency
-        }
-      ]
-    )
+    res.json(data)
   }).catch(err => {
     res.json({error: true, message: err.message})
   })
 })
 
 router.get('/', function(req, res, next) {
-  Data.find()
+  Datadate.find()
   .then(data => {
     res.json(data)
   }).catch(err => {
@@ -39,12 +32,11 @@ router.get('/', function(req, res, next) {
 
 router.put('/:id', function(req, res, next) {
   let id = req.params.id;
-  Data.findByIdAndUpdate(id, {
+  Datadate.findByIdAndUpdate(id, {
     letter: req.body.letter,
     frequency: req.body.frequency
   }, {new: true})
   .then(data => {
-    console.log(data);
     if(!data){
       res.json({error: true, message: `note with id : ${id} not found`})
     }else {
@@ -53,7 +45,7 @@ router.put('/:id', function(req, res, next) {
         message: 'data have been updated',
         data: {
           _id: data._id,
-          letter: data.letter,
+          letter: moment(data.letter).format("YYYY-MM-DD"),
           frequency: data.frequency
         }
       })
@@ -64,7 +56,7 @@ router.put('/:id', function(req, res, next) {
 })
 
 router.post('/', function(req, res, next) {
-  let data = new Data({
+  let data = new Datadate({
     letter: req.body.letter,
     frequency: req.body.frequency
   })
@@ -74,7 +66,7 @@ router.post('/', function(req, res, next) {
       message: 'data have been added',
       data: {
         _id: data._id,
-        letter: data.letter,
+        letter: moment(data.letter).format("YYYY-MM-DD"),
         frequency: data.frequency
       }
     })
@@ -84,7 +76,7 @@ router.post('/', function(req, res, next) {
 })
 
 router.delete('/:id', function(req, res, next) {
-  Data.findByIdAndRemove(req.params.id)
+  Datadate.findByIdAndRemove(req.params.id)
   .then(data => {
     if(!data){
       res.json({error: true, message: `note with id : ${id} not found`})
@@ -94,7 +86,7 @@ router.delete('/:id', function(req, res, next) {
         message: 'data have been deleted',
         data: {
           _id: data._id,
-          letter: data.letter,
+          letter: moment(data.letter).format("YYYY-MM-DD"),
           frequency: data.frequency
         }
       })
@@ -105,7 +97,7 @@ router.delete('/:id', function(req, res, next) {
 })
 
 router.get('/:id', function(req, res, next) {
-  Data.findOne({
+  Datadate.findOne({
     _id: req.params.id
   })
   .then(data => {
@@ -117,7 +109,7 @@ router.get('/:id', function(req, res, next) {
         message: 'data found',
         data: {
           _id: data._id,
-          letter: data.letter,
+          letter: moment(data.letter).format("YYYY-MM-DD"),
           frequency: data.frequency
         }
       })
