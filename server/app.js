@@ -9,6 +9,7 @@ var index = require('./routes/index');
 var users = require('./routes/user');
 var data = require('./routes/data');
 var date = require('./routes/datadate');
+var maps = require('./routes/maps');
 
 var app = express();
 
@@ -35,6 +36,7 @@ app.use('/', index)
 app.use('/api/users', users);
 app.use('/api/data', data);
 app.use('/api/datadate', date);
+app.use('/api/maps', maps);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

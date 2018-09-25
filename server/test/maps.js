@@ -2,75 +2,81 @@ const chai = require('chai');
 const chaiHTTP = require('chai-http');
 const server = require('../app');
 
-const Data = require('../models/data');
+const Maps = require('../models/maps');
 const should = chai.should();
 
 chai.use(chaiHTTP);
 
-describe('data', function(){
-  //user.collection.drop();
+describe('map', function(){
 
   beforeEach(function(done){
-    let data = new Data({
-      letter: 'A',
-      frequency: '1.1'
+    let map = new Maps({
+      title: 'Trans Studio Mall',
+      lat:-6.9261257,
+      lng:107.6343728
     });
 
-    data.save(function(err){
+    map.save(function(err){
       done();
     });
   });
 
   afterEach(function(done){
-    Data.collection.drop();
+    Maps.collection.drop();
     done();
-  });
+  })
 
-  it('seharusnya mencari data berdasarkan data yang dimasukkan dengan metode POST', function(done) {
+  it('seharusnya mencari data berdasarkan data yang dimasukkan dengan metode POST', function(done){
     chai.request(server)
-    .post('api/data/search')
+    .post('api/maps/search')
     .send({
-      letter: 'A',
-      frequency: '1.1'
+      title: 'Trans Studio Mall',
+      lat:-6.9261257,
+      lng:107.6343728
     }).end((err, res) => {
       res.should.have.status(200);
       res.should.be.json;
-      res.body.should.be.a('array');
+      res.body.should.be.an('array');
       res.body.should.have.property('_id');
-      res.body.should.have.property('letter');
-      res.body.should.have.property('frequency');
-      res.body.letter.should.equal('A');
-      res.body.frequency.should.equal('1.1');
+      res.body.should.have.property('title');
+      res.body.should.have.property('lat');
+      res.body.should.have.property('lng');
+      res.body.title.should.equal('Trans Studio Mall');
+      res.body.title.should.equal(-6.9261257);
+      res.body.title.should.equal(107.6343728);
       done();
     })
   })
 
-  it('seharusnya menampilkan semua data yang ada di database dengan metode GET', function(done) {
+  it('seharusnya membaca semua data yang ada di database dengan metode GET', function(done){
     chai.request(server)
-    .get('api/data')
+    .get('api/maps')
     .end((err, res) => {
       res.should.have.status(200);
       res.should.be.json;
-      res.body.should.be.a('array');
+      res.body.should.be.an('array');
       res.body.should.have.property('_id');
-      res.body.should.have.property('letter');
-      res.body.should.have.property('frequency');
-      res.body.letter.should.equal('A');
-      res.body.frequency.should.equal('1.1');
+      res.body.should.have.property('title');
+      res.body.should.have.property('lat');
+      res.body.should.have.property('lng');
+      res.body.title.should.equal('Trans Studio Mall');
+      res.body.title.should.equal(-6.9261257);
+      res.body.title.should.equal(107.6343728);
       done();
     })
   })
 
   it('seharusnya merubah satu data berdasarkan id dengan metode PUT', function(done){
     chai.request(server)
-    .get('/api/data')
-    .end(function(err, res){
+    .get('api/maps')
+    .end((err, res) => {
       chai.request(server)
-      .put('/api/data/' + res.body[0]._id)
+      .put('api/maps/' + res.body[0]._id)
       .send({
-        letter: "B",
-        frequency: "1.2"
-      }).end(function(error, res){
+        title: 'Trans Studio Mall',
+        lat:-6.9261257,
+        lng:107.6343728
+      }).end((err, res) => {
         res.should.have.status(200);
         res.should.be.json;
         res.body.should.be.a('object');
@@ -80,19 +86,21 @@ describe('data', function(){
         res.body.success.should.be.a('string');
         res.body.message.should.be.a('string');
         res.body.data.should.be.a('object');
-        res.body.letter.should.equal('B');
-        res.body.frequency.should.equal('1.2');
+        res.body.title.should.equal('Trans Studio Mall');
+        res.body.lat.should.equal(-6.9261257);
+        res.body.lng.should.equal(107.6343728);
         done();
       })
     })
   })
 
-  it('seharusnya menambahkan satu data dengan metode POST', function(done) {
+  it('seharusnya menambahkan satu data dengan metode POST', function(done){
     chai.request(server)
-    .post('api/data')
+    .post('api/maps')
     .send({
-      letter: 'B',
-      frequency: '1.2'
+      title: 'Cihampelas Walk',
+      lat:-6.8965475,
+      lng:107.6103536
     }).end((err, res) => {
       res.should.have.status(200);
       res.should.be.json;
@@ -103,19 +111,20 @@ describe('data', function(){
       res.body.success.should.be.a('string');
       res.body.message.should.be.a('string');
       res.body.data.should.be.a('object');
-      res.body.letter.should.equal('B');
-      res.body.frequency.should.equal('1.2');
+      res.body.title.should.equal('Cihampelas Walk');
+      res.body.lat.should.equal(-6.8965475);
+      res.body.lng.should.equal(107.6103536);
       done();
     })
   })
 
   it('seharusnya menghapus satu data berdasarkan id dengan metode DELETE', function(done){
     chai.request(server)
-    .get('/api/data')
-    .end(function(err, res){
+    .get('api/maps')
+    .end((err, res) => {
       chai.request(server)
-      .delete('/api/data/' + res.body[0]._id)
-      .end(function(error, res){
+      .delete('api/maps/' + res.body[0]._id)
+      .end((err, res) => {
         res.should.have.status(200);
         res.should.be.json;
         res.body.should.be.a('object');
@@ -125,8 +134,9 @@ describe('data', function(){
         res.body.success.should.be.a('string');
         res.body.message.should.be.a('string');
         res.body.data.should.be.a('object');
-        res.body.letter.should.equal('B');
-        res.body.frequency.should.equal('1.2');
+        res.body.title.should.equal('Cihampelas Walk');
+        res.body.lat.should.equal(-6.8965475);
+        res.body.lng.should.equal(107.6103536);
         done();
       })
     })
@@ -134,8 +144,8 @@ describe('data', function(){
 
   it('seharusnya menampilkan satu data berdasarkan id dengan metode GET', function(done){
     chai.request(server)
-    .get('/api/data/' + res.body[0]._id)
-    .end(function(error, res){
+    .get('api/maps/' + res.body[0]._id)
+    .end((err, res) => {
       res.should.have.status(200);
       res.should.be.json;
       res.body.should.be.a('object');
@@ -145,9 +155,11 @@ describe('data', function(){
       res.body.success.should.be.a('string');
       res.body.message.should.be.a('string');
       res.body.data.should.be.a('object');
-      res.body.letter.should.equal('B');
-      res.body.frequency.should.equal('1.2');
+      res.body.title.should.equal('Cihampelas Walk');
+      res.body.lat.should.equal(-6.8965475);
+      res.body.lng.should.equal(107.6103536);
       done();
     })
   })
+  
 })

@@ -1,25 +1,20 @@
 var express = require('express');
 var router = express.Router();
 var jwt = require('jsonwebtoken');
-const Data = require('../models/data');
+const Maps = require('../models/maps');
 var ObjectId = require('mongodb').ObjectID;
 
-router.post('/search', function(req, res, next) {
-  let data1 = {};
-  if(req.body.letter){
-    data1.letter = req.body.letter
-  }
-  if(req.body.frequency){
-    data1.frequency = req.body.frequency
-  }
-  Data.findOne(data1)
-  .then(data => {
+router.post('/search', function(req, res, next){
+  Maps.findOne({
+    title: req.body.title
+  }).then(data => {
     res.json(
       [
         {
           _id: data._id,
-          letter: data.letter,
-          frequency: data.frequency
+          title: data.title,
+          lat: data.lat,
+          lng: data.lng
         }
       ]
     )
@@ -28,8 +23,8 @@ router.post('/search', function(req, res, next) {
   })
 })
 
-router.get('/', function(req, res, next) {
-  Data.find()
+router.get('/', function(req, res, next){
+  Maps.find()
   .then(data => {
     res.json(data)
   }).catch(err => {
@@ -37,11 +32,12 @@ router.get('/', function(req, res, next) {
   })
 })
 
-router.put('/:id', function(req, res, next) {
-  let id = req.params.id;
-  Data.findByIdAndUpdate(id, {
-    letter: req.body.letter,
-    frequency: req.body.frequency
+router.put('/:id', function(req, res, next){
+  let id = req.params.id
+  Maps.findByIdAndUpdate(id, {
+    title: req.body.title,
+    lat: req.body.lat,
+    lng: req.body.lng
   }, {new: true})
   .then(data => {
     if(!data){
@@ -52,8 +48,9 @@ router.put('/:id', function(req, res, next) {
         message: 'data have been updated',
         data: {
           _id: data._id,
-          letter: data.letter,
-          frequency: data.frequency
+          title: data.title,
+          lat: data.lat,
+          lng: data.lng
         }
       })
     }
@@ -62,19 +59,21 @@ router.put('/:id', function(req, res, next) {
   })
 })
 
-router.post('/', function(req, res, next) {
-  let data = new Data({
-    letter: req.body.letter,
-    frequency: req.body.frequency
+router.post('/', function(req, res, next){
+  let map = new Maps({
+    title: req.body.title,
+    lat: req.body.lat,
+    lng: req.body.lng
   })
-  data.save().then(data => {
+  map.save().then(data => {
     res.json({
       success: true,
       message: 'data have been added',
       data: {
         _id: data._id,
-        letter: data.letter,
-        frequency: data.frequency
+        title: data.title,
+        lat: data.lat,
+        lng: data.lng
       }
     })
   }).catch(err => {
@@ -82,8 +81,8 @@ router.post('/', function(req, res, next) {
   })
 })
 
-router.delete('/:id', function(req, res, next) {
-  Data.findByIdAndRemove(req.params.id)
+router.delete('/:id', function(req, res, next){
+  Maps.findByIdAndRemove(req.params.id)
   .then(data => {
     if(!data){
       res.json({error: true, message: `note with id : ${id} not found`})
@@ -93,8 +92,9 @@ router.delete('/:id', function(req, res, next) {
         message: 'data have been deleted',
         data: {
           _id: data._id,
-          letter: data.letter,
-          frequency: data.frequency
+          title: data.title,
+          lat: data.lat,
+          lng: data.lng
         }
       })
     }
@@ -103,8 +103,8 @@ router.delete('/:id', function(req, res, next) {
   })
 })
 
-router.get('/:id', function(req, res, next) {
-  Data.findOne({
+router.get('/:id', function(req, res, next){
+  Maps.findOne({
     _id: req.params.id
   })
   .then(data => {
@@ -116,8 +116,9 @@ router.get('/:id', function(req, res, next) {
         message: 'data found',
         data: {
           _id: data._id,
-          letter: data.letter,
-          frequency: data.frequency
+          title: data.title,
+          lat: data.lat,
+          lng: data.lng
         }
       })
     }

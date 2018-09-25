@@ -52,11 +52,11 @@ describe('date', function(){
       res.should.have.status(200);
       res.should.be.json;
       res.body.should.be.a('array');
-      res.body[0].should.have.property('_id');
-      res.body[0].should.have.property('letter');
-      res.body[0].should.have.property('frequency');
-      res.body[0].letter.should.equal('2017-12-31');
-      res.body[0].frequency.should.equal('1.1');
+      res.body.should.have.property('_id');
+      res.body.should.have.property('letter');
+      res.body.should.have.property('frequency');
+      res.body.letter.should.equal('2017-12-31');
+      res.body.frequency.should.equal('1.1');
       done();
     })
   })
@@ -150,3 +150,4 @@ describe('date', function(){
       done();
     })
   })
+})
