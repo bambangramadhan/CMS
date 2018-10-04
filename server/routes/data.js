@@ -4,7 +4,7 @@ var jwt = require('jsonwebtoken');
 const Data = require('../models/data');
 var ObjectId = require('mongodb').ObjectID;
 
-router.post('/search', function(req, res, next) {
+router.post('/search', function(req, res) {
   let data1 = {};
   if(req.body.letter){
     data1.letter = req.body.letter
@@ -12,23 +12,15 @@ router.post('/search', function(req, res, next) {
   if(req.body.frequency){
     data1.frequency = req.body.frequency
   }
-  Data.findOne(data1)
+  Data.find(data1)
   .then(data => {
-    res.json(
-      [
-        {
-          _id: data._id,
-          letter: data.letter,
-          frequency: data.frequency
-        }
-      ]
-    )
+    res.json(data)
   }).catch(err => {
     res.json({error: true, message: err.message})
   })
 })
 
-router.get('/', function(req, res, next) {
+router.get('/', function(req, res) {
   Data.find()
   .then(data => {
     res.json(data)
@@ -37,7 +29,7 @@ router.get('/', function(req, res, next) {
   })
 })
 
-router.put('/:id', function(req, res, next) {
+router.put('/:id', function(req, res) {
   let id = req.params.id;
   Data.findByIdAndUpdate(id, {
     letter: req.body.letter,
@@ -62,7 +54,7 @@ router.put('/:id', function(req, res, next) {
   })
 })
 
-router.post('/', function(req, res, next) {
+router.post('/', function(req, res) {
   let data = new Data({
     letter: req.body.letter,
     frequency: req.body.frequency
@@ -82,7 +74,7 @@ router.post('/', function(req, res, next) {
   })
 })
 
-router.delete('/:id', function(req, res, next) {
+router.delete('/:id', function(req, res) {
   Data.findByIdAndRemove(req.params.id)
   .then(data => {
     if(!data){
@@ -103,7 +95,7 @@ router.delete('/:id', function(req, res, next) {
   })
 })
 
-router.get('/:id', function(req, res, next) {
+router.get('/:id', function(req, res) {
   Data.findOne({
     _id: req.params.id
   })

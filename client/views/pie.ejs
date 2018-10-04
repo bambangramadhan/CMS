@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div id="chartContainer" style="height: 500px; width: 100%;"></div>
+  </div>
+  <script type="text/javascript">
+
+  $(document).ready(function(){
+    drawChart();
+  });
+
+  function drawChart() {
+    $.ajax({
+      url: 'http://localhost:3001/api/data/',
+      method: "GET"
+    }).done(data => {
+      let arr = [];
+      for(let i = 0; i < data.length; i++){
+        arr.push({y: data[i].frequency, label: data[i].letter})
+      }
+      var chart = new CanvasJS.Chart("chartContainer", {
+        animationEnabled: true,
+        title: {
+          text: "Pie Chart"
+        },
+        data: [{
+          type: "pie",
+          startAngle: 240,
+          yValueFormatString: "##0.0",
+          indexLabel: "{label} {y}",
+          dataPoints: arr
+        }]
+      });
+      chart.render();
+    })
+  }
+
+</script>
+</body>
+</html>

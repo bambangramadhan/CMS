@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+</head>
+<body>
+  <nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Content Management System</a>
+      </div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Home</a></li>
+          <li><a href=../data>Data</a></li>
+          <li><a href=../dataDate>Data Date</a></li>
+          <li><a href=../maps>Maps</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="#" id="logout">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="jumbotron">
+    </div>
+  </div>
+
+  <script type="text/javascript">
+  function auth(token){
+    $.ajax({
+      url: 'http://localhost:3001/api/users/check',
+      method: 'POST',
+      data:{
+        token: token
+      }
+    }).done(data => {
+      if(!data.valid){
+        window.location = '/login';
+      }
+    })
+  }
+
+  function drawHeader(email){
+    let html = `<h2>Welcome,</h2> <h2>${email}</h2>`;
+    $('.jumbotron').html(html);
+  }
+  $('#logout').click(function(e){
+    e.preventDefault();
+    localStorage.clear();
+    window.location = '/login';
+  })
+  $(document).ready(function(){
+    auth(localStorage.getItem('token'));
+    drawHeader(localStorage.getItem('email'));
+  })
+  </script>
+
+</body>
+</html>

@@ -3,20 +3,19 @@ var router = express.Router();
 var jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
-router.post('/register', function(req, res, next) {
+router.post('/register', function(req, res) {
   if(req.body.password == req.body.retypepassword){
     let user = new User({
       email: req.body.email,
       password: req.body.password,
-      retypepassword: req.body.retypepassword,
-      token : jwt.sign({email: req.body.email, password: req.body.password}, 'tok')
+      retypepassword: req.body.retypepassword
     })
     user.save().then(data => {
       res.json({
         data : {
           email: data.email
         },
-        token : jwt.sign({email: data.email, password: data.password}, 'tok')
+        token : jwt.sign({email: data.email, password: data.password}, 'tok', { expiresIn: 86400 })
       })
     }).catch(err => {
       res.json({error: true, message: err.message})
@@ -26,7 +25,7 @@ router.post('/register', function(req, res, next) {
   }
 });
 
-router.post('/login', function(req, res, next) {
+router.post('/login', function(req, res) {
   User.findOne({
     email: req.body.email,
     password: req.body.password
@@ -38,7 +37,7 @@ router.post('/login', function(req, res, next) {
         data : {
           email: data.email
         },
-        token : jwt.sign({email: data.email, password: data.password}, 'tok')
+        token : jwt.sign({email: data.email, password: data.password}, 'tok', { expiresIn: 86400 })
       })
     }
   }).catch(err => {
@@ -46,35 +45,22 @@ router.post('/login', function(req, res, next) {
   })
 });
 
-router.post('/check', function(req, res, next) {
+router.post('/check', function(req, res) {
   let token = req.body.token || req.query.token
   jwt.verify(token, 'tok', (err, decoded) => {
     if(!decoded){
-      res.json({error: true, message: err.message})
+      res.json({error: true, message: 'invalid token'})
     }else {
-      User.findOne({
-        email: decoded.email,
-        password: decoded.password
-      }).then(data => {
-        if(!data){
-          res.json({error: true, message: 'invalid token'})
-        }else {
-          res.json({valid: true})
-        }
-      })
+      res.json({valid: true})
     }
   }).catch(err => {
     res.json({error: true, message: err.message})
   })
 });
 
-router.get('/destroy', function(req, res, next) {
-  User.findOneAndDelete({
-    token: req.query.token
-  }).then(data => {
-    res.json({logout: true})
-  }).catch(err => {
-    res.json({error: true, message: err.message})
+router.get('/destroy', function(req, res) {
+  res.json({
+    logout: true
   })
 });
 
