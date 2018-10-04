@@ -18,12 +18,24 @@ router.get('/data', function(req, res, next) {
   res.render('data');
 });
 
+router.get('/datadate', function(req, res, next) {
+  res.render('datadate');
+});
+
 router.get('/bar', function(req, res, next) {
   res.render('bar');
 });
 
 router.get('/pie', function(req, res, next) {
   res.render('pie');
+});
+
+router.get('/line', function(req, res, next) {
+  res.render('line');
+});
+
+router.get('/maps', function(req, res, next) {
+  res.render('maps');
 });
 
 router.get('/logout', (req, res) => {

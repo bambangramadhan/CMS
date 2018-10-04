@@ -25,8 +25,8 @@
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
           <li><a href="../home">Home</a></li>
-          <li class="active"><a href="#">Data</a></li>
-          <li><a href="../datadate">Data Date</a></li>
+          <li><a href="../data">Data</a></li>
+          <li class="active"><a href="#">Data Date</a></li>
           <li><a href="../maps">Maps</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
@@ -48,7 +48,7 @@
 
           <div class="form-group">
             <label for="letter">Letter</label>
-            <input type="text" class="form-control" id="addLetter" placeholder="A">
+            <input type="date" class="form-control" id="addLetter" placeholder="A">
           </div>
 
           <div class="form-group">
@@ -69,7 +69,7 @@
 
       <div class="form-group">
         <label for="letter">Letter</label>
-        <input type="text" class="form-control" id="searchLetter" placeholder="A">
+        <input onchange="searchData()" type="date" class="form-control" id="searchLetter" placeholder="A">
       </div>
 
       <div class="form-group">
@@ -144,7 +144,7 @@
     let confirmData = confirm("Are you sure will delete this data?");
     if(confirmData){
       $.ajax({
-        url: 'http://localhost:3001/api/data/' + $(this).attr('containid'),
+        url: 'http://localhost:3001/api/datadate/' + $(this).attr('containid'),
         method: 'DELETE'
       }).done(data => {
         showAlert("Data has been deleted");
@@ -162,7 +162,7 @@
     }else{
       if(id == ""){
         $.ajax({
-          url: 'http://localhost:3001/api/data/',
+          url: 'http://localhost:3001/api/datadate/',
           method: "POST",
           data: {
             letter: letter,
@@ -176,7 +176,7 @@
         })
       }else{
         $.ajax({
-          url: 'http://localhost:3001/api/data/' + id,
+          url: 'http://localhost:3001/api/datadate/' + id,
           method: 'PUT',
           data:{
             letter: letter,
@@ -195,7 +195,7 @@
 
   function getData() {
     $.ajax({
-      url: 'http://localhost:3001/api/data/',
+      url: 'http://localhost:3001/api/datadate/',
       method: "GET",
     }).done(data => {
       showTable(data)
@@ -209,7 +209,7 @@
       showAlert("Please insert number")
     }else {
       $.ajax({
-        url: 'http://localhost:3001/api/data/search',
+        url: 'http://localhost:3001/api/datadate/search',
         method: 'POST',
         data:{
           letter: letter,

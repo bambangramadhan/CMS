@@ -31,8 +31,8 @@ describe('user', function(){
     .post('api/users/register')
     .send({
       email: 'restu@gmail.com',
-      password: '1234'
-      retypepassword: '1234'
+      password: '12345',
+      retypepassword: '12345'
     }).end(function(err, res){
       res.should.have.status(200);
       res.should.be.json;
