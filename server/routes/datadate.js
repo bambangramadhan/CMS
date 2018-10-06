@@ -58,7 +58,7 @@ router.put('/:id', function(req, res) {
     }else {
       res.json({
         success: true,
-        message: 'data have been updated',
+        message: 'data has been updated',
         data: {
           _id: data._id,
           letter: moment(data.letter).format("YYYY-MM-DD"),
@@ -79,7 +79,7 @@ router.post('/', function(req, res) {
   data.save().then(data => {
     res.json({
       success: true,
-      message: 'data have been added',
+      message: 'data has been added',
       data: {
         _id: data._id,
         letter: moment(data.letter).format("YYYY-MM-DD"),
@@ -99,7 +99,7 @@ router.delete('/:id', function(req, res) {
     }else {
       res.json({
         success: true,
-        message: 'data have been deleted',
+        message: 'data has been deleted',
         data: {
           _id: data._id,
           letter: moment(data.letter).format("YYYY-MM-DD"),

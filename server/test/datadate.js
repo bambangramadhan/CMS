@@ -13,7 +13,7 @@ describe('date', function(){
   beforeEach(function(done){
     let date = new Datadate({
       letter: '2017-12-31',
-      frequency: '1.1'
+      frequency: 1.1
     });
 
     date.save(function(err){
@@ -26,128 +26,125 @@ describe('date', function(){
     done();
   });
 
-  it('seharusnya mencari datadate berdasarkan datadate yang dimasukkan dengan metode POST', function(done) {
+  it("Seharusnya sistem mengembalikan datadate berdasarkan nilai letter yang dimasukan dengan metode POST", function(done){
     chai.request(server)
-    .post('api/datadate/search')
+    .post('/api/datadate/search')
     .send({
-      letter: '2017-12-31',
-      frequency: '1.1'
-    }).end((err, res) => {
+      letter: '2017-12-31'
+    }).end(function(err, res){
       res.should.have.status(200);
       res.should.be.json;
-      res.body.should.be.a('array');
-      res.body.should.have.property('_id');
-      res.body.should.have.property('letter');
-      res.body.should.have.property('frequency');
-      res.body.letter.should.equal('2017-12-31');
-      res.body.frequency.should.equal('1.1');
+      res.body[0].should.be.a('object');
+      res.body[0].should.have.property('letter');
+      res.body[0].should.have.property('frequency');
+      res.body[0].letter.should.equal('2017-12-31');
+      res.body[0].frequency.should.equal(1.1);
       done();
     })
   })
 
-  it('seharusnya menampilkan semua datadate yang ada di database dengan metode GET', function(done) {
+  it("Seharusnya sistem mengembalikan datadate dengan metode GET", function(done){
     chai.request(server)
-    .get('api/datadate')
-    .end((err, res) => {
+    .get('/api/datadate')
+    .end(function(err, res){
       res.should.have.status(200);
       res.should.be.json;
-      res.body.should.be.a('array');
-      res.body.should.have.property('_id');
-      res.body.should.have.property('letter');
-      res.body.should.have.property('frequency');
-      res.body.letter.should.equal('2017-12-31');
-      res.body.frequency.should.equal('1.1');
+      res.body[0].should.be.a('object');
+      res.body[0].should.have.property('letter');
+      res.body[0].should.have.property('frequency');
+      res.body[0].letter.should.equal('2017-12-31');
+      res.body[0].frequency.should.equal(1.1);
       done();
     })
   })
 
-  it('seharusnya merubah satu datadate berdasarkan id dengan metode PUT', function(done){
+  it("Seharusnya sistem berhasil mengubah datadate dengan metode PUT", function(done){
     chai.request(server)
     .get('/api/datadate')
     .end(function(err, res){
       chai.request(server)
       .put('/api/datadate/' + res.body[0]._id)
       .send({
-        letter: "2018-12-31",
-        frequency: "1.2"
-      }).end(function(error, res){
-        res.should.have.status(200);
-        res.should.be.json;
-        res.body.should.be.a('array');
-        res.body.should.have.property('success');
-        res.body.should.have.property('message');
-        res.body.should.have.property('data');
-        res.body.success.should.be.a('string');
-        res.body.message.should.be.a('string');
-        res.body.data.should.be.a('object');
-        res.body.letter.should.equal('2018-12-31');
-        res.body.frequency.should.equal('1.2');
+        letter: '2018-09-04',
+        frequency: 4.11
+      }).end(function(error, response){
+        response.should.have.status(200);
+        response.should.be.json;
+        response.body.should.be.a('object');
+        response.body.should.have.property('success');
+        response.body.should.have.property('message');
+        response.body.should.have.property('data');
+        response.body.success.should.equal(true);
+        response.body.message.should.equal("data has been updated");
+        response.body.data.letter.should.equal('2018-09-04');
+        response.body.data.frequency.should.equal(4.11);
         done();
       })
     })
   })
 
-  it('seharusnya menambahkan satu datadate dengan metode POST', function(done) {
+  it('seharusnya menambahkan satu datadate dengan metode POST', function(done){
     chai.request(server)
-    .post('api/datadate')
+    .post('/api/datadate')
     .send({
-      letter: '2018-12-31',
-      frequency: '1.2'
-    }).end((err, res) => {
+      letter: '2018-09-04',
+      frequency: 4.11
+    }).end(function(err, res){
       res.should.have.status(200);
       res.should.be.json;
       res.body.should.be.a('object');
       res.body.should.have.property('success');
       res.body.should.have.property('message');
       res.body.should.have.property('data');
-      res.body.success.should.be.a('string');
-      res.body.message.should.be.a('string');
-      res.body.data.should.be.a('object');
-      res.body.letter.should.equal('2018-12-31');
-      res.body.frequency.should.equal('1.2');
+      res.body.success.should.equal(true);
+      res.body.message.should.equal("data has been added");
+      res.body.data.letter.should.equal("2018-09-04");
+      res.body.data.frequency.should.equal(4.11);
       done();
     })
   })
 
-  it('seharusnya menghapus satu datadate berdasarkan id dengan metode DELETE', function(done){
+  it('seharusnya menghapus satu data berdasarkan id dengan metode DELETE', function(done){
     chai.request(server)
     .get('/api/datadate')
     .end(function(err, res){
       chai.request(server)
       .delete('/api/datadate/' + res.body[0]._id)
-      .end(function(error, res){
-        res.should.have.status(200);
-        res.should.be.json;
-        res.body.should.be.a('object');
-        res.body.should.have.property('success');
-        res.body.should.have.property('message');
-        res.body.should.have.property('data');
-        res.body.success.should.be.a('string');
-        res.body.message.should.be.a('string');
-        res.body.data.should.be.a('object');
-        res.body.letter.should.equal('2018-12-31');
-        res.body.frequency.should.equal('1.2');
+      .end(function(error, response){
+        response.should.have.status(200);
+        response.should.be.json;
+        response.body.should.be.a('object');
+        response.body.should.have.property('success');
+        response.body.should.have.property('message');
+        response.body.should.have.property('data');
+        response.body.success.should.equal(true);
+        response.body.message.should.equal("data has been deleted");
+        response.body.data.letter.should.equal('2017-12-31');
+        response.body.data.frequency.should.equal(1.1);
         done();
       })
     })
   })
 
-  it('seharusnya menampilkan satu datadate berdasarkan id dengan metode GET', function(done){
+  it('seharusnya menampilkan datadate berdasarkan id dengan metode GET', function(done){
     chai.request(server)
-    .get('/api/datadate/' + res.body[0]._id)
-    .end(function(error, res){
-      res.should.have.status(200);
-      res.should.be.json;
-      res.body.should.be.a('object');
-      res.body.should.have.property('success');
-      res.body.should.have.property('message');
-      res.body.should.have.property('data');
-      res.body.success.should.be.a('string');
-      res.body.message.should.be.a('string');
-      res.body.data.should.be.a('object');
-      res.body.letter.should.equal('2018-12-31');
-      res.body.frequency.should.equal('1.2');
-      done();
+    .get('/api/datadate')
+    .end(function(err, res){
+      chai.request(server)
+      .get('/api/datadate/' + res.body[0]._id)
+      .end(function(error, response){
+        response.should.have.status(200);
+        response.should.be.json;
+        response.body.should.be.a('object');
+        response.body.should.have.property('success');
+        response.body.should.have.property('message');
+        response.body.should.have.property('data');
+        response.body.success.should.equal(true);
+        response.body.message.should.equal("data found");
+        response.body.data.letter.should.equal('2017-12-31');
+        response.body.data.frequency.should.equal(1.1);
+        done();
+      })
     })
   })
 })

@@ -13,7 +13,7 @@ describe('user', function(){
   beforeEach(function(done){
     let user = new User({
       email: 'bambang@gmail.com',
-      password: '1234'
+      password: 1234
     });
 
     user.save(function(err){
@@ -26,13 +26,13 @@ describe('user', function(){
     done();
   });
 
-  it('seharusnya menyimpan data dan menampilkan email dan token dengan metode GET', function(done){
+  it('seharusnya menyimpan data dan menampilkan email dan token dengan metode POST', function(done){
     chai.request(server)
-    .post('api/users/register')
+    .post('/api/users/register')
     .send({
       email: 'restu@gmail.com',
-      password: '12345',
-      retypepassword: '12345'
+      password: 12345,
+      retypepassword: 12345
     }).end(function(err, res){
       res.should.have.status(200);
       res.should.be.json;
@@ -48,10 +48,10 @@ describe('user', function(){
 
   it('seharusnya mengautentikasi data dengan metode POST', function(done){
     chai.request(server)
-    .post('api/users/login')
+    .post('/api/users/login')
     .send({
-      email: 'restu@gmail.com',
-      password: '1234'
+      email: 'bambang@gmail.com',
+      password: 1234
     }).end(function(err, res){
       res.should.have.status(200);
       res.should.be.json;
@@ -60,14 +60,14 @@ describe('user', function(){
       res.body.should.have.property('token');
       res.body.data.should.be.a('object');
       res.body.token.should.be.a('string');
-      res.body.data.email.should.equal('restu@gmail.com');
+      res.body.data.email.should.equal("bambang@gmail.com");
       done();
     })
   })
 
   it('seharusnya mengecek token dengan metode POST', function(done){
     chai.request(server)
-    .post('api/users/check')
+    .post('/api/users/check')
     .send({
       token:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJlc3R1QGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiMTIzNCIsImlhdCI6MTUzNzcxNjE3MX0.UULAtTPm2-NzEuYc9XjgmIVHD_bCkgTauksQx0S0yM0'
     }).end(function(error, res){

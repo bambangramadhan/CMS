@@ -45,7 +45,7 @@ router.put('/:id', function(req, res, next){
     }else {
       res.json({
         success: true,
-        message: 'data have been updated',
+        message: 'data has been updated',
         data: {
           _id: data._id,
           title: data.title,
@@ -68,7 +68,7 @@ router.post('/', function(req, res, next){
   map.save().then(data => {
     res.json({
       success: true,
-      message: 'data have been added',
+      message: 'data has been added',
       data: {
         _id: data._id,
         title: data.title,
@@ -89,7 +89,7 @@ router.delete('/:id', function(req, res, next){
     }else {
       res.json({
         success: true,
-        message: 'data have been deleted',
+        message: 'data has been deleted',
         data: {
           _id: data._id,
           title: data.title,

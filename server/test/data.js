@@ -13,7 +13,7 @@ describe('data', function(){
   beforeEach(function(done){
     let data = new Data({
       letter: 'A',
-      frequency: '1.1'
+      frequency: 1.1
     });
 
     data.save(function(err){
@@ -26,42 +26,40 @@ describe('data', function(){
     done();
   });
 
-  it('seharusnya mencari data berdasarkan data yang dimasukkan dengan metode POST', function(done) {
+  it("Seharusnya sistem mengembalikan nilai letter dan frequency dengan metode POST", function(done){
     chai.request(server)
-    .post('api/data/search')
+    .post('/api/data/search')
     .send({
-      letter: 'A',
-      frequency: '1.1'
-    }).end((err, res) => {
+      letter: "A",
+      frequency: 1.1,
+    }).end(function(err, res){
       res.should.have.status(200);
       res.should.be.json;
-      res.body.should.be.a('array');
-      res.body.should.have.property('_id');
-      res.body.should.have.property('letter');
-      res.body.should.have.property('frequency');
-      res.body.letter.should.equal('A');
-      res.body.frequency.should.equal('1.1');
+      res.body[0].should.be.a('object');
+      res.body[0].should.have.property('letter');
+      res.body[0].should.have.property('frequency');
+      res.body[0].letter.should.equal("A");
+      res.body[0].frequency.should.equal(1.1);
       done();
     })
   })
 
-  it('seharusnya menampilkan semua data yang ada di database dengan metode GET', function(done) {
+  it("Seharusnya sistem mengembalikan nilai letter dan frequency dengan metode GET", function(done){
     chai.request(server)
-    .get('api/data')
-    .end((err, res) => {
+    .get('/api/data')
+    .end(function(err, res){
       res.should.have.status(200);
       res.should.be.json;
-      res.body.should.be.a('array');
-      res.body.should.have.property('_id');
-      res.body.should.have.property('letter');
-      res.body.should.have.property('frequency');
-      res.body.letter.should.equal('A');
-      res.body.frequency.should.equal('1.1');
+      res.body[0].should.be.a('object');
+      res.body[0].should.have.property('letter');
+      res.body[0].should.have.property('frequency');
+      res.body[0].letter.should.equal("A");
+      res.body[0].frequency.should.equal(1.1);
       done();
     })
   })
 
-  it('seharusnya merubah satu data berdasarkan id dengan metode PUT', function(done){
+  it("Seharusnya sistem berhasil mengubah data dengan metode PUT", function(done){
     chai.request(server)
     .get('/api/data')
     .end(function(err, res){
@@ -69,42 +67,40 @@ describe('data', function(){
       .put('/api/data/' + res.body[0]._id)
       .send({
         letter: "B",
-        frequency: "1.2"
-      }).end(function(error, res){
-        res.should.have.status(200);
-        res.should.be.json;
-        res.body.should.be.a('object');
-        res.body.should.have.property('success');
-        res.body.should.have.property('message');
-        res.body.should.have.property('data');
-        res.body.success.should.be.a('string');
-        res.body.message.should.be.a('string');
-        res.body.data.should.be.a('object');
-        res.body.letter.should.equal('B');
-        res.body.frequency.should.equal('1.2');
+        frequency: 9.9
+      }).end(function(error, response){
+        response.should.have.status(200);
+        response.should.be.json;
+        response.body.should.be.a('object');
+        response.body.should.have.property('success');
+        response.body.should.have.property('message');
+        response.body.should.have.property('data');
+        response.body.success.should.equal(true);
+        response.body.message.should.equal("data have been updated");
+        response.body.data.letter.should.equal("B");
+        response.body.data.frequency.should.equal(9.9);
         done();
       })
     })
   })
 
-  it('seharusnya menambahkan satu data dengan metode POST', function(done) {
+  it('seharusnya menambahkan satu data dengan metode POST', function(done){
     chai.request(server)
-    .post('api/data')
+    .post('/api/data')
     .send({
-      letter: 'B',
-      frequency: '1.2'
-    }).end((err, res) => {
+      letter: "B",
+      frequency: 1.2
+    }).end(function(err, res){
       res.should.have.status(200);
       res.should.be.json;
       res.body.should.be.a('object');
       res.body.should.have.property('success');
       res.body.should.have.property('message');
       res.body.should.have.property('data');
-      res.body.success.should.be.a('string');
-      res.body.message.should.be.a('string');
-      res.body.data.should.be.a('object');
-      res.body.letter.should.equal('B');
-      res.body.frequency.should.equal('1.2');
+      res.body.success.should.equal(true);
+      res.body.message.should.equal("data have been added");
+      res.body.data.letter.should.equal("B");
+      res.body.data.frequency.should.equal(1.2);
       done();
     })
   })
@@ -115,39 +111,42 @@ describe('data', function(){
     .end(function(err, res){
       chai.request(server)
       .delete('/api/data/' + res.body[0]._id)
-      .end(function(error, res){
-        res.should.have.status(200);
-        res.should.be.json;
-        res.body.should.be.a('object');
-        res.body.should.have.property('success');
-        res.body.should.have.property('message');
-        res.body.should.have.property('data');
-        res.body.success.should.be.a('string');
-        res.body.message.should.be.a('string');
-        res.body.data.should.be.a('object');
-        res.body.letter.should.equal('B');
-        res.body.frequency.should.equal('1.2');
+      .end(function(error, response){
+        response.should.have.status(200);
+        response.should.be.json;
+        response.body.should.be.a('object');
+        response.body.should.have.property('success');
+        response.body.should.have.property('message');
+        response.body.should.have.property('data');
+        response.body.success.should.equal(true);
+        response.body.message.should.equal("data have been deleted");
+        response.body.data.letter.should.equal("A");
+        response.body.data.frequency.should.equal(1.1);
         done();
       })
     })
   })
 
-  it('seharusnya menampilkan satu data berdasarkan id dengan metode GET', function(done){
+
+  it('seharusnya menampilkan data berdasarkan id dengan metode GET', function(done){
     chai.request(server)
-    .get('/api/data/' + res.body[0]._id)
-    .end(function(error, res){
-      res.should.have.status(200);
-      res.should.be.json;
-      res.body.should.be.a('object');
-      res.body.should.have.property('success');
-      res.body.should.have.property('message');
-      res.body.should.have.property('data');
-      res.body.success.should.be.a('string');
-      res.body.message.should.be.a('string');
-      res.body.data.should.be.a('object');
-      res.body.letter.should.equal('B');
-      res.body.frequency.should.equal('1.2');
-      done();
+    .get('/api/data')
+    .end(function(err, res){
+      chai.request(server)
+      .get('/api/data/' + res.body[0]._id)
+      .end(function(error, response){
+        response.should.have.status(200);
+        response.should.be.json;
+        response.body.should.be.a('object');
+        response.body.should.have.property('success');
+        response.body.should.have.property('message');
+        response.body.should.have.property('data');
+        response.body.success.should.equal(true);
+        response.body.message.should.equal("data found");
+        response.body.data.letter.should.equal("A");
+        response.body.data.frequency.should.equal(1.1);
+        done();
+      })
     })
   })
 })
