@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8">
-  <title></title>
+  <title>Datadate</title>
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
@@ -37,62 +37,69 @@
   </nav>
 
   <div class="container">
-    <div id="input-alert" class="alert alert-info" role="alert"></div>
+    <div class="panel panel-success">
+      <div class="panel-heading text-center">DATADATE
+      </div>
+      <div class="panel-body">
+        <div id="input-alert" class="alert alert-info" role="alert"></div>
+        <div id="input-alert2" class="alert alert-danger" role="alert"></div>
 
-    <button id="add-btn" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Add</button><br><br>
+        <button id="add-btn" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Add</button><br><br>
 
-    <div id="add-form" class="panel panel-primary" style="display: none;">
-      <div class="panel-body bg-info">
+        <div id="add-form" class="panel panel-primary" style="display: none;">
+          <div class="panel-body bg-info">
+
+            <form class="form-inline">
+
+              <div class="form-group">
+                <label for="letter">Letter</label>
+                <input type="date" class="form-control" id="addLetter" placeholder="A">
+              </div>
+
+              <div class="form-group">
+                <label for="frequency">Frequency</label>
+                <input type="float" class="form-control" id="addFrequency" placeholder="0.0000">
+              </div>
+
+              <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-save"></span> Save</button>
+
+            </form>
+
+          </div>
+        </div>
+
+        <h2>Search</h2><hr>
 
         <form class="form-inline">
 
           <div class="form-group">
             <label for="letter">Letter</label>
-            <input type="date" class="form-control" id="addLetter" placeholder="A">
+            <input onchange="searchData()" type="date" class="form-control" id="searchLetter" placeholder="A">
           </div>
 
           <div class="form-group">
             <label for="frequency">Frequency</label>
-            <input type="float" class="form-control" id="addFrequency" placeholder="0.0000">
+            <input type="float" class="form-control" id="searchFrequency" placeholder="0.0000">
           </div>
 
-          <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-save"></span> Save</button>
+        </form><br>
 
-        </form>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>ID</th>
+              <th>Letter</th>
+              <th>Frequency</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
 
+          </tbody>
+        </table>
       </div>
     </div>
-
-    <h2>Search</h2><hr>
-
-    <form class="form-inline">
-
-      <div class="form-group">
-        <label for="letter">Letter</label>
-        <input onchange="searchData()" type="date" class="form-control" id="searchLetter" placeholder="A">
-      </div>
-
-      <div class="form-group">
-        <label for="frequency">Frequency</label>
-        <input type="float" class="form-control" id="searchFrequency" placeholder="0.0000">
-      </div>
-
-    </form><br>
-
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>No</th>
-          <th>ID</th>
-          <th>Letter</th>
-          <th>Frequency</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-
-      </tbody>
-    </table>
   </div>
 
   <script>
@@ -101,6 +108,7 @@
   $(document).ready(function(){
     auth(localStorage.getItem('token'));
     $('#input-alert').hide();
+    $('#input-alert2').hide();
     getData();
   });
 
@@ -127,8 +135,8 @@
       trHTML += `<td>`
       trHTML += `<button class="editBtn btn btn-success" containid="${data._id}" containletter="${data.letter}" containfrequency="${data.frequency}"><span class="glyphicon glyphicon-pencil"> Edit</span></button>`;
       trHTML += `<button class="deleteBtn btn btn-danger" containid="${data._id}" ><span class="glyphicon glyphicon-trash"> Delete</span></button>`;
-      trHTML += `<td>`
-      trHTML += `<tr>`;
+      trHTML += `</td>`
+      trHTML += `</tr>`;
     })
     $('table tbody').html(trHTML);
   }
@@ -141,13 +149,13 @@
   })
 
   $('table tbody').on('click', '.deleteBtn', function(){
-    let confirmData = confirm("Are you sure will delete this data?");
+    let confirmData = confirm("Are you sure want to delete this data?");
     if(confirmData){
       $.ajax({
         url: 'http://localhost:3001/api/datadate/' + $(this).attr('containid'),
         method: 'DELETE'
       }).done(data => {
-        showAlert("Data has been deleted");
+        dangerAlert("Data has been deleted");
         getData();
       })
     }
@@ -157,7 +165,7 @@
     let letter = $("#addLetter").val()
     let frequency = $("#addFrequency").val()
     if(isNaN(frequency) === true){
-      showAlert("Please insert FLOAT number")
+      dangerAlert("Please insert FLOAT number")
       $('#add-form').show();
     }else{
       if(id == ""){
@@ -172,6 +180,8 @@
           showAlert("Data has been added");
           $('#addLetter').val('');
           $('#addFrequency').val('');
+          $('#input-alert').hide(5000);
+          $('#input-alert2').hide();
           getData();
         })
       }else{
@@ -186,6 +196,8 @@
           showAlert("Data has been edited");
           $('#addLetter').val('');
           $('#addFrequency').val('');
+          $('#input-alert').hide(5000);
+          $('#input-alert2').hide();
           getData();
           id = "";
         })
@@ -206,7 +218,7 @@
     let letter = $("#searchLetter").val()
     let frequency = $("#searchFrequency").val()
     if(isNaN(frequency) === true){
-      showAlert("Please insert number")
+      dangerAlert("Please insert number")
     }else {
       $.ajax({
         url: 'http://localhost:3001/api/datadate/search',
@@ -216,8 +228,8 @@
           frequency: frequency
         }
       }).done(data => {
-        showAlert("Data has been edited");
         $('#input-alert').hide();
+        $('#input-alert2').hide();
         showTable(data)
       })
     }
@@ -244,6 +256,11 @@
   function showAlert(data){
     $('#input-alert').show();
     $('#input-alert').html(data);
+  }
+
+  function dangerAlert(data){
+    $('#input-alert2').show();
+    $('#input-alert2').html(data);
   }
 
   function auth(token){

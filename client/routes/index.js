@@ -22,6 +22,10 @@ router.get('/datadate', function(req, res, next) {
   res.render('datadate');
 });
 
+router.get('/maps', function(req, res, next) {
+  res.render('maps');
+});
+
 router.get('/bar', function(req, res, next) {
   res.render('bar');
 });
@@ -34,8 +38,8 @@ router.get('/line', function(req, res, next) {
   res.render('line');
 });
 
-router.get('/maps', function(req, res, next) {
-  res.render('maps');
+router.get('/mapsChart', function(req, res, next) {
+  res.render('mapsChart');
 });
 
 router.get('/logout', (req, res) => {
